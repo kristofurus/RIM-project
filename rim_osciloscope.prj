@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="ASCII"?>
+<sdkproject:SdkProject xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:sdkproject="http://www.xilinx.com/sdkproject" name="rim_osciloscope" location="C:/Users/krist/workspace/rim_osciloscope" platform="C:/Users/krist/workspace/rim_projekt/export/rim_projekt/rim_projekt.xpfm" platformUID="xilinx:basys3::0.0(custom)" systemProject="rim_osciloscope_system" sysConfig="rim_projekt" runtime="cpp" cpu="standalone_microblaze_0" cpuInstance="microblaze_0" os="standalone" mssSignature="718fef6e2b5667571b00ea076c9f6edd">
+  <configuration name="Debug" id="xilinx.gnu.mb.exe.debug.701308359">
+    <configBuildOptions xsi:type="sdkproject:SdkOptions"/>
+    <lastBuildOptions xsi:type="sdkproject:SdkOptions"/>
+  </configuration>
+  <configuration name="Release" id="xilinx.gnu.mb.exe.release.1864723845" dirty="true">
+    <configBuildOptions xsi:type="sdkproject:SdkOptions"/>
+  </configuration>
+  <template appTemplateName="empty_application"/>
+</sdkproject:SdkProject>
