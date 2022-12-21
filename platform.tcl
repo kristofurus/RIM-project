@@ -18,3 +18,6 @@ platform generate -domains
 platform write
 platform generate -quick
 platform generate
+bsp reload
+platform config -updatehw {C:/Users/krist/VivadoProjects/RIM_projekt/rim_projekt.xsa}
+platform generate -domains 
