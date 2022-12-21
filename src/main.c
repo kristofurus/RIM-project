@@ -19,16 +19,26 @@
 #define XADC_VAUX15 XSM_CH_AUX_MIN+15		// vaux15 (connector JXADC4 & JXADC10)
 
 // button params
-#define BTN_ID XPAR_AXI_GPIO_BUTTONS_DEVICE_ID	// buttons id
-#define BTN_CHANNEL 1							// button channel
-#define BTN_MASK 0b1111							// buttons mask (1 - on, 0 - off)
+#define BTN_ID XPAR_AXI_GPIO_0_DEVICE_ID	// buttons id
+#define BTN_CHANNEL 1						// button channel
+#define BTN_MASK 0b1111						// buttons mask (1 - on, 0 - off)
+
+// switches params
+#define SW_ID XPAR_AXI_GPIO_1_DEVICE_ID	// switches id
+#define SW_CHANNEL 1					// switches channel
+#define SW_MASK 0b1111					// switches mask (1 - on, 0 - off)
 
 int main() {
 
 	// Sysmon (xadc) configuration variables
 	XSysMon_Config *sys_cfg_ptr;
 	XSysMon adc_device;
-	u16 adc_data[4];
+	u16 adc_data;
+
+	// switches configuration
+	XGpio_Config *gpio_cfg_ptr;
+	XGpio sw_device;
+	u32 sw_data;
 
 	// first UART transmission
 	xil_printf("Entered function main\r\n");
@@ -37,14 +47,41 @@ int main() {
 	sys_cfg_ptr = XSysMon_LookupConfig(XADC_ID);
 	XSysMon_CfgInitialize(&adc_device, sys_cfg_ptr, sys_cfg_ptr->BaseAddress);
 
+
+
+	// Initialize switches
+	gpio_cfg_ptr = XGpio_LookupConfig(SW_ID);
+	XGpio_CfgInitialize(&sw_device, gpio_cfg_ptr, gpio_cfg_ptr->BaseAddress);
+
+	// Set Switches Tristate
+	XGpio_SetDataDirection(&sw_device, SW_CHANNEL, SW_MASK);
+
+	// start ADC conversion
 	XSysMon_StartAdcConversion(&adc_device);
 
 	while (1) {
-		adc_data[0] = XSysMon_GetAdcData(&adc_device, XADC_VAUX6);
-		adc_data[1] = XSysMon_GetAdcData(&adc_device, XADC_VAUX14);
-		adc_data[2] = XSysMon_GetAdcData(&adc_device, XADC_VAUX7);
-		adc_data[3] = XSysMon_GetAdcData(&adc_device, XADC_VAUX15);
-		xil_printf("%u\t%u\t%u\t%u\r\n", adc_data[0], adc_data[1], adc_data[2], adc_data[3]);
-
+		sw_data = XGpio_DiscreteRead(&sw_device, SW_CHANNEL);
+		sw_data &= SW_MASK;
+		if (sw_data != 0) {
+			if (sw_data % 2) {
+				// channel 1 in adc
+				adc_data = XSysMon_GetAdcData(&adc_device, XADC_VAUX6);
+				xil_printf("%u\t", adc_data);
+			}
+			if ((sw_data >> 1) % 2) {
+				// channel 2
+				adc_data = XSysMon_GetAdcData(&adc_device, XADC_VAUX14);
+				xil_printf("%u\t", adc_data);
+			}
+			if ((sw_data >> 2) % 2) {
+				adc_data = XSysMon_GetAdcData(&adc_device, XADC_VAUX7);
+				xil_printf("%u\t", adc_data);
+			}
+			if ((sw_data >> 3) % 2) {
+				adc_data = XSysMon_GetAdcData(&adc_device, XADC_VAUX15);
+				xil_printf("%u\t", adc_data);
+			}
+			xil_printf("\r\n");
+		}
 	}
 }
